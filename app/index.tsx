@@ -201,13 +201,15 @@ export default function Home() {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
         <View style={styles.headerContainer}>
-          <Header 
-            title={currentChecklist?.title || 'ルーティンリスト'}
-            onBack={currentChecklist ? handleBack : undefined}
-            onReset={handleResetTasks} 
-            completedCount={completedCount} 
-            totalCount={tasks.length} 
-          />
+          {currentChecklist && (
+            <Header 
+              title={currentChecklist.title}
+              onBack={handleBack}
+              onReset={handleResetTasks} 
+              completedCount={completedCount} 
+              totalCount={tasks.length} 
+            />
+          )}
         </View>
         
         {showQuote && !currentChecklist && (
