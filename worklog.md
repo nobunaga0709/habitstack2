@@ -30,4 +30,19 @@
 - expo-routerの画面遷移方法の調整
 - 3日間ローカル利用→4日目以降ログイン推奨の仕様を決定
 - 初回起動日保存・3日経過判定のユーティリティ（firstLaunch.ts）を実装
-- Todoリストに関連タスクを追加 
+- Todoリストに関連タスクを追加
+
+## 2025-05-03
+- 依存パッケージの解決・エラー修正対応
+  - storage.ts, theme.ts, quotes.ts などのユーティリティ新規作成
+  - lucide-react-nativeの依存衝突により@expo/vector-iconsへ全面置換
+  - theme.tsにspacing, typography, shadowsを追加しimportエラー解消
+  - firebase, @react-native-async-storage/async-storage, tslib などの依存パッケージを再インストール
+  - node_modules, package-lock.json削除→npm installで依存関係を正常化
+  - 金言取得用のquotes.tsを実装し、QuoteCardのエラー解消
+  - 各種importパス・型エラー・依存エラーの都度修正
+- 依存エラーやimportエラー発生時の対処法を整理
+  - パッケージの再インストール
+  - node_modules削除＆再構築
+  - エディタ・開発サーバーの再起動
+  - バージョン不整合時はバージョン指定インストール 

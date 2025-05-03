@@ -8,7 +8,7 @@ import {
   Pressable,
   TouchableOpacity,
 } from 'react-native';
-import { Trash2 } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
 import Animated, { 
   useAnimatedStyle, 
   useSharedValue, 
@@ -75,7 +75,7 @@ const TaskItem: React.FC<TaskItemProps> = ({ task, onToggle, onDelete }) => {
             style={styles.deleteButton}
             onPress={() => onDelete(task.id)}
           >
-            <Trash2 size={18} color={colors.danger} />
+            <Feather name="trash-2" size={18} color={colors.danger} />
           </TouchableOpacity>
           <Switch
             value={task.completed}

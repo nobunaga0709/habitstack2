@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import { ChevronRight, Trash2 } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
 import { Checklist } from '../types';
 import { colors, spacing, typography, shadows } from '../utils/theme';
 
@@ -39,9 +39,9 @@ const ChecklistItem: React.FC<ChecklistItemProps> = ({ checklist, onPress, onDel
             style={styles.deleteButton}
             onPress={() => onDelete(checklist.id)}
           >
-            <Trash2 size={18} color={colors.danger} />
+            <Feather name="trash-2" size={18} color={colors.danger} />
           </TouchableOpacity>
-          <ChevronRight size={20} color={colors.textLight} />
+          <Feather name="chevron-right" size={20} color={colors.textLight} />
         </View>
       </View>
       <View style={styles.progressBar}>

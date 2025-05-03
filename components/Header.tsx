@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
-import { RefreshCw, ChevronLeft } from 'lucide-react-native';
+import { Feather } from '@expo/vector-icons';
 import Animated, { 
   useAnimatedStyle, 
   useSharedValue, 
@@ -49,7 +49,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack, onReset, completedCount,
               onPress={onBack}
               hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
             >
-              <ChevronLeft size={24} color={colors.text} />
+              <Feather name="chevron-left" size={24} color={colors.text} />
             </TouchableOpacity>
           )}
           <View>
@@ -74,11 +74,7 @@ const Header: React.FC<HeaderProps> = ({ title, onBack, onReset, completedCount,
           activeOpacity={0.7}
         >
           <Animated.View style={animatedStyles}>
-            <RefreshCw 
-              size={20} 
-              color={completedCount > 0 ? colors.white : colors.textLight} 
-              strokeWidth={2.5}
-            />
+            <Feather name="refresh-cw" size={20} color={completedCount > 0 ? colors.white : colors.textLight} />
           </Animated.View>
           <Text style={[
             styles.resetText,

@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   Platform,
 } from 'react-native';
-import { Plus } from 'lucide-react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import { colors, spacing, typography, shadows } from '../utils/theme';
 import { TaskFormData } from '../types';
 
@@ -41,7 +41,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onSubmit }) => {
         onPress={handleSubmit}
         disabled={!title.trim()}
       >
-        <Plus size={20} color={title.trim() ? colors.white : colors.textLight} />
+        <FontAwesome name="plus" size={20} color={title.trim() ? colors.white : colors.textLight} />
       </TouchableOpacity>
     </View>
   );

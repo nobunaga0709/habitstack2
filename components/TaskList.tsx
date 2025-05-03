@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { Task } from '../types';
-import { CheckCircle2, Circle, Trash2, Clock } from 'lucide-react-native';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { colors } from '../utils/theme';
 
 interface TaskListProps {
@@ -37,9 +37,9 @@ const TaskList: React.FC<TaskListProps> = ({
     >
       <View style={styles.checkbox}>
         {item.completed ? (
-          <CheckCircle2 size={24} color={colors.success} />
+          <FontAwesome name="check-circle" size={24} color={colors.success} />
         ) : (
-          <Circle size={24} color={colors.textLight} />
+          <FontAwesome name="circle-o" size={24} color={colors.textLight} />
         )}
       </View>
       <View style={styles.content}>
@@ -51,7 +51,7 @@ const TaskList: React.FC<TaskListProps> = ({
         </Text>
         <View style={styles.footer}>
           <View style={styles.date}>
-            <Clock size={14} color={colors.textLight} />
+            <Feather name="clock" size={14} color={colors.textLight} />
             <Text style={styles.dateText}>
               {formatDate(item.createdAt)}
             </Text>
@@ -60,7 +60,7 @@ const TaskList: React.FC<TaskListProps> = ({
             style={styles.deleteButton}
             onPress={() => onDeleteTask(item.id)}
           >
-            <Trash2 size={18} color={colors.danger} />
+            <Feather name="trash-2" size={18} color={colors.danger} />
           </TouchableOpacity>
         </View>
       </View>

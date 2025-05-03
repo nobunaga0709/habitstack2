@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native';
 import { Checklist } from '../types';
-import { Edit2, Trash2, Check, X, CheckCircle2 } from 'lucide-react-native';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 import { colors } from '../utils/theme';
 
 interface ChecklistListProps {
@@ -61,13 +61,13 @@ const ChecklistList: React.FC<ChecklistListProps> = ({
                     style={styles.editButton}
                     onPress={() => handleSaveEdit(checklist)}
                   >
-                    <Check size={20} color={colors.success} />
+                    <Feather name="check" size={20} color={colors.success} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.editButton}
                     onPress={handleCancelEdit}
                   >
-                    <X size={20} color={colors.danger} />
+                    <Feather name="x" size={20} color={colors.danger} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -88,7 +88,7 @@ const ChecklistList: React.FC<ChecklistListProps> = ({
                       />
                     </View>
                     <View style={styles.taskCount}>
-                      <CheckCircle2 size={14} color={colors.success} />
+                      <FontAwesome name="check-circle" size={14} color={colors.success} />
                       <Text style={styles.taskCountText}>
                         {completedTasks} / {checklist.tasks.length} 習慣
                       </Text>
@@ -100,13 +100,13 @@ const ChecklistList: React.FC<ChecklistListProps> = ({
                     style={styles.button}
                     onPress={() => handleStartEdit(checklist)}
                   >
-                    <Edit2 size={20} color={colors.primary} />
+                    <Feather name="edit-2" size={20} color={colors.primary} />
                   </TouchableOpacity>
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => onDelete(checklist)}
                   >
-                    <Trash2 size={20} color={colors.danger} />
+                    <Feather name="trash-2" size={20} color={colors.danger} />
                   </TouchableOpacity>
                 </View>
               </>
