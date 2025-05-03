@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Platform, KeyboardAvoidingView, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Platform, KeyboardAvoidingView, TouchableOpacity, Text, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Header from '../components/Header';
 import TaskList from '../components/TaskList';
@@ -12,6 +12,8 @@ import ChecklistList from '../components/ChecklistList';
 import QuoteCard from '../components/QuoteCard';
 import { shouldRecommendLogin } from '../utils/firstLaunch';
 import { router } from 'expo-router';
+import { addTaskHistory, getTaskHistory } from '../utils/taskHistory';
+import TaskHeatmap from '../components/TaskHeatmap';
 
 export default function Home() {
   const [checklists, setChecklists] = useState<Checklist[]>([]);
@@ -21,6 +23,7 @@ export default function Home() {
   const [showChecklistList, setShowChecklistList] = useState(true);
   const [showQuote, setShowQuote] = useState(true);
   const [showLoginBanner, setShowLoginBanner] = useState(false);
+  const [taskHistory, setTaskHistory] = useState({});
 
   const tasks = currentChecklist?.tasks || [];
   const completedCount = tasks.filter(task => task.completed).length;
@@ -28,6 +31,7 @@ export default function Home() {
   useEffect(() => {
     loadChecklists();
     checkLoginRecommend();
+    getTaskHistory().then(setTaskHistory);
   }, []);
 
   const loadChecklists = async () => {
@@ -51,12 +55,20 @@ export default function Home() {
 
   const handleToggleTask = async (id: string) => {
     if (!currentChecklist) return;
+    // トグル前のタスク状態を取得
+    const prevTask = currentChecklist.tasks.find(t => t.id === id);
+    const wasCompleted = prevTask?.completed;
     try {
       const updatedChecklists = await toggleTask(checklists, currentChecklist.id, id);
       setChecklists(updatedChecklists);
       const updatedChecklist = updatedChecklists.find(c => c.id === currentChecklist.id);
       if (updatedChecklist) {
         setCurrentChecklist(updatedChecklist);
+        // 「未完了→完了」の場合のみ履歴登録
+        const toggledTask = updatedChecklist.tasks.find(t => t.id === id);
+        if (toggledTask && toggledTask.completed && !wasCompleted) {
+          await addTaskHistory(id);
+        }
       }
     } catch (error) {
       console.error('タスクの更新に失敗しました:', error);
@@ -200,70 +212,76 @@ export default function Home() {
         style={styles.keyboardAvoid}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.headerContainer}>
-          {currentChecklist && (
-            <Header 
-              title={currentChecklist.title}
-              onBack={handleBack}
-              onReset={handleResetTasks} 
-              completedCount={completedCount} 
-              totalCount={tasks.length} 
+        <View style={styles.content}>
+          <View style={styles.headerContainer}>
+            {currentChecklist && (
+              <Header 
+                title={currentChecklist.title}
+                onBack={handleBack}
+                onReset={handleResetTasks} 
+                completedCount={completedCount} 
+                totalCount={tasks.length} 
+              />
+            )}
+          </View>
+          
+          {showQuote && !currentChecklist && (
+            <QuoteCard 
+              category="motivation" 
+              onClose={() => setShowQuote(false)}
             />
           )}
-        </View>
-        
-        {showQuote && !currentChecklist && (
-          <QuoteCard 
-            category="motivation" 
-            onClose={() => setShowQuote(false)}
-          />
-        )}
-        
-        <View style={styles.content}>
-          {showChecklistList ? (
-            <>
-              <ChecklistList
-                checklists={checklists}
-                onSelect={handleSelectChecklist}
-                onEdit={handleEditChecklist}
-                onDelete={handleDeleteChecklist}
-              />
-              
-              {isEditing ? (
-                <ChecklistForm
-                  onSubmit={handleAddChecklist}
-                  onCancel={() => setIsEditing(false)}
-                />
-              ) : (
-                <TouchableOpacity
-                  style={styles.addButton}
-                  onPress={() => setIsEditing(true)}
-                >
-                  <Text style={styles.addButtonText}>新しいルーティンを作成</Text>
-                </TouchableOpacity>
-              )}
-            </>
-          ) : (
-            <>
-              {isEditing && currentChecklist ? (
-                <ChecklistForm
-                  initialData={{ title: currentChecklist.title }}
-                  onSubmit={handleUpdateChecklist}
-                  onCancel={() => setIsEditing(false)}
-                />
-              ) : (
-                <>
-                  <TaskList 
-                    tasks={tasks} 
-                    isLoading={isLoading} 
-                    onToggleTask={handleToggleTask}
-                    onDeleteTask={handleDeleteTask}
+          
+          <View style={styles.content}>
+            {showChecklistList ? (
+              <>
+                <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }}>
+                  <ChecklistList
+                    checklists={checklists}
+                    onSelect={handleSelectChecklist}
+                    onEdit={handleEditChecklist}
+                    onDelete={handleDeleteChecklist}
                   />
-                  <TaskForm onSubmit={handleAddTask} />
-                </>
-              )}
-            </>
-          )}
+                </ScrollView>
+                {isEditing && (
+                  <View style={styles.formFixed}>
+                    <ChecklistForm
+                      onSubmit={handleAddChecklist}
+                      onCancel={() => setIsEditing(false)}
+                    />
+                  </View>
+                )}
+                {!isEditing && (
+                  <TouchableOpacity
+                    style={styles.fab}
+                    onPress={() => setIsEditing(true)}
+                  >
+                    <Text style={styles.fabText}>＋</Text>
+                  </TouchableOpacity>
+                )}
+              </>
+            ) : (
+              <>
+                {isEditing && currentChecklist ? (
+                  <ChecklistForm
+                    initialData={{ title: currentChecklist.title }}
+                    onSubmit={handleUpdateChecklist}
+                    onCancel={() => setIsEditing(false)}
+                  />
+                ) : (
+                  <>
+                    <TaskList 
+                      tasks={tasks} 
+                      isLoading={isLoading} 
+                      onToggleTask={handleToggleTask}
+                      onDeleteTask={handleDeleteTask}
+                    />
+                    <TaskForm onSubmit={handleAddTask} />
+                  </>
+                )}
+              </>
+            )}
+          </View>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -303,6 +321,7 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'center',
     marginTop: 16,
+    width: '100%',
   },
   addButtonText: {
     color: colors.white,
@@ -320,4 +339,48 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 14,
   },
+  bottomFixed: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: colors.background,
+    alignItems: 'center',
+    paddingBottom: 8,
+    paddingTop: 8,
+    zIndex: 10,
+  },
+  fab: {
+    position: 'absolute',
+    right: 24,
+    bottom: 32,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    zIndex: 20,
+  },
+  fabText: {
+    color: colors.white,
+    fontSize: 32,
+    fontWeight: 'bold',
+    marginTop: -2,
+  },
+  formFixed: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 30,
+    backgroundColor: 'transparent',
+    alignItems: 'center',
+  },
 });
+

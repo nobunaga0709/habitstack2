@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { ChecklistFormData } from '../types';
 import { colors } from '../utils/theme';
+import { Feather } from '@expo/vector-icons';
 
 interface ChecklistFormProps {
   onSubmit: (data: ChecklistFormData) => void;
@@ -21,21 +22,21 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ onSubmit, initialData, on
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.input}
-        value={title}
-        onChangeText={setTitle}
-        placeholder="ルーティンのタイトル"
-        placeholderTextColor="#666"
-      />
-      <View style={styles.buttonContainer}>
+      <View style={styles.row}>
+        <TextInput
+          style={styles.input}
+          value={title}
+          onChangeText={setTitle}
+          placeholder="ルーティンのタイトル"
+          placeholderTextColor="#666"
+        />
         {onCancel && (
-          <TouchableOpacity style={[styles.button, styles.cancelButton]} onPress={onCancel}>
-            <Text style={styles.buttonText}>キャンセル</Text>
+          <TouchableOpacity style={[styles.iconButton, styles.cancelButton]} onPress={onCancel}>
+            <Feather name="x" size={20} color={colors.white} />
           </TouchableOpacity>
         )}
-        <TouchableOpacity style={[styles.button, styles.submitButton]} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>{initialData ? '更新' : '作成'}</Text>
+        <TouchableOpacity style={[styles.iconButton, styles.submitButton]} onPress={handleSubmit}>
+          <Feather name="check" size={20} color={colors.white} />
         </TouchableOpacity>
       </View>
     </View>
@@ -44,30 +45,36 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ onSubmit, initialData, on
 
 const styles = StyleSheet.create({
   container: {
-    padding: 16,
-    backgroundColor: colors.backgroundLight,
+    padding: 12,
+    backgroundColor: colors.primary,
     borderRadius: 8,
-    marginBottom: 16,
+    marginBottom: 0,
+    width: '100%',
+    alignItems: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    width: '100%',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ddd',
     borderRadius: 4,
-    padding: 12,
-    marginBottom: 16,
-    fontSize: 16,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: 8,
-  },
-  button: {
     paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
+    marginBottom: 0,
+    fontSize: 16,
+    flex: 1,
+    backgroundColor: colors.white,
+  },
+  iconButton: {
+    padding: 8,
     borderRadius: 4,
-    minWidth: 80,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 8,
   },
   submitButton: {
     backgroundColor: colors.primary,
