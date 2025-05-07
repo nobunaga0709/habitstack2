@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, SafeAreaView, Platform, KeyboardAvoidingView, TouchableOpacity, Text, ScrollView } from 'react-native';
+import { StyleSheet, View, SafeAreaView, Platform, KeyboardAvoidingView, TouchableOpacity, Text, ScrollView, Alert } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Header from '../components/Header';
 import TaskList from '../components/TaskList';
 import TaskForm from '../components/TaskForm';
-import { Checklist, TaskFormData } from '../types/index';
+import { Checklist, Task, TaskFormData } from '../types/index';
 import { getChecklists, saveChecklists, addTask, deleteTask, toggleTask, resetChecklist, addChecklist, updateChecklist, deleteChecklist } from '../utils/storage';
 import { colors } from '../utils/theme';
 import ChecklistForm from '../components/ChecklistForm';
@@ -114,16 +114,26 @@ export default function Home() {
 
   const handleResetTasks = async () => {
     if (!currentChecklist) return;
-    try {
-      const updatedChecklists = await resetChecklist(checklists, currentChecklist.id);
-      setChecklists(updatedChecklists);
-      const updatedChecklist = updatedChecklists.find(c => c.id === currentChecklist.id);
-      if (updatedChecklist) {
-        setCurrentChecklist(updatedChecklist);
-      }
-    } catch (error) {
-      console.error('タスクのリセットに失敗しました:', error);
-    }
+    Alert.alert(
+      '確認',
+      '本当にすべてのタスクをリセットしますか？',
+      [
+        { text: 'キャンセル', style: 'cancel' },
+        { text: 'OK', style: 'destructive', onPress: async () => {
+            try {
+              const updatedChecklists = await resetChecklist(checklists, currentChecklist.id);
+              setChecklists(updatedChecklists);
+              const updatedChecklist = updatedChecklists.find(c => c.id === currentChecklist.id);
+              if (updatedChecklist) {
+                setCurrentChecklist(updatedChecklist);
+              }
+            } catch (error) {
+              console.error('タスクのリセットに失敗しました:', error);
+            }
+          }
+        },
+      ]
+    );
   };
 
   const handleUpdateChecklist = async (data: { title: string }) => {
@@ -191,6 +201,20 @@ export default function Home() {
     }
   };
 
+  // タスク並び替え
+  const handleReorderTasks = async (newTasks: Task[]) => {
+    if (!currentChecklist) return;
+    // 現在のchecklists配列のcurrentChecklistだけtasksを新順序で差し替え
+    const updatedChecklists = checklists.map(c =>
+      c.id === currentChecklist.id ? { ...c, tasks: newTasks } : c
+    );
+    setChecklists(updatedChecklists);
+    // currentChecklistも更新
+    setCurrentChecklist({ ...currentChecklist, tasks: newTasks });
+    // ストレージにも保存
+    await saveChecklists(updatedChecklists);
+  };
+
   if (isLoading) {
     return (
       <View style={styles.container}>
@@ -212,7 +236,7 @@ export default function Home() {
         style={styles.keyboardAvoid}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <View style={styles.content}>
+        
           <View style={styles.headerContainer}>
             {currentChecklist && (
               <Header 
@@ -224,6 +248,7 @@ export default function Home() {
               />
             )}
           </View>
+          <View style={styles.content}>
           
           {showQuote && !currentChecklist && (
             <QuoteCard 
@@ -232,10 +257,16 @@ export default function Home() {
             />
           )}
           
-          <View style={styles.content}>
+          <View style={{ flex: 1 }}>
             {showChecklistList ? (
               <>
-                <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 32 }}>
+                <ScrollView 
+                  style={{ flex: 1 }} 
+                  contentContainerStyle={{ 
+                    paddingBottom: 32
+                  }} 
+                  showsVerticalScrollIndicator={false}
+                >
                   <ChecklistList
                     checklists={checklists}
                     onSelect={handleSelectChecklist}
@@ -275,6 +306,7 @@ export default function Home() {
                       isLoading={isLoading} 
                       onToggleTask={handleToggleTask}
                       onDeleteTask={handleDeleteTask}
+                      onReorderTasks={handleReorderTasks}
                     />
                     <TaskForm onSubmit={handleAddTask} />
                   </>

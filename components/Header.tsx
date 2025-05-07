@@ -76,12 +76,6 @@ const Header: React.FC<HeaderProps> = ({ title, onBack, onReset, completedCount,
           <Animated.View style={animatedStyles}>
             <Feather name="refresh-cw" size={20} color={completedCount > 0 ? colors.white : colors.textLight} />
           </Animated.View>
-          <Text style={[
-            styles.resetText,
-            completedCount === 0 && styles.resetTextDisabled
-          ]}>
-            リセット
-          </Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -90,11 +84,14 @@ const Header: React.FC<HeaderProps> = ({ title, onBack, onReset, completedCount,
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: Platform.OS === 'ios' ? spacing.xxl : spacing.xl,
+    // paddingTop: Platform.OS === 'ios' ? spacing.xxl : spacing.xl,
+    paddingTop: spacing.md,
     paddingBottom: spacing.md,
-    paddingHorizontal: spacing.xl,
+    paddingHorizontal: spacing.md,
     backgroundColor: colors.white,
     ...shadows.medium,
+    width: '100%',
+    alignSelf: 'stretch',
   },
   headerContent: {
     flexDirection: 'row',

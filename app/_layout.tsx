@@ -17,15 +17,17 @@ LogBox.ignoreLogs([
 // Layoutコンポーネント - アプリケーションのレイアウト構造を定義
 export default function RootLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="tabs" />
-      <Stack.Screen name="auth" />
-      <Stack.Screen name="index" />
-    </Stack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="tabs" />
+        <Stack.Screen name="auth" />
+        <Stack.Screen name="index" />
+      </Stack>
+    </GestureHandlerRootView>
   );
 }
 

@@ -121,6 +121,15 @@ const ChecklistList: React.FC<ChecklistListProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignSelf: 'stretch',
+    maxWidth: 800,
+    paddingHorizontal: 0,
+    // marginHorizontal: -16, // 親Viewのpaddingを相殺
+    // width: 'auto',
+    // alignSelf: 'auto',
+    // minWidth: '100%',
+    // デバッグ用
+    // backgroundColor: 'rgba(255,0,0,0.1)',
   },
   item: {
     flexDirection: 'row',
@@ -128,7 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 12,
     marginBottom: 8,
-    padding: 16,
+    // padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 0,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -137,9 +148,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    // width: '100%',
   },
   titleContainer: {
     flex: 1,
+    width: '100%',
   },
   title: {
     fontSize: 16,

@@ -3,12 +3,14 @@ import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native
 import { Task } from '../types';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { colors } from '../utils/theme';
+import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
 
 interface TaskListProps {
   tasks: Task[];
   isLoading: boolean;
   onToggleTask: (id: string) => void;
   onDeleteTask: (id: string) => void;
+  onReorderTasks: (newTasks: Task[]) => void;
 }
 
 const TaskList: React.FC<TaskListProps> = ({
@@ -16,6 +18,7 @@ const TaskList: React.FC<TaskListProps> = ({
   isLoading,
   onToggleTask,
   onDeleteTask,
+  onReorderTasks,
 }) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -27,13 +30,16 @@ const TaskList: React.FC<TaskListProps> = ({
     });
   };
 
-  const renderItem = ({ item }: { item: Task }) => (
+  const renderItem = ({ item, drag, isActive }: RenderItemParams<Task>) => (
     <TouchableOpacity
       style={[
         styles.item,
-        item.completed && styles.itemCompleted
+        item.completed && styles.itemCompleted,
+        isActive && { opacity: 0.7 }
       ]}
       onPress={() => onToggleTask(item.id)}
+      onLongPress={drag}
+      delayLongPress={150}
     >
       <View style={styles.checkbox}>
         {item.completed ? (
@@ -85,11 +91,14 @@ const TaskList: React.FC<TaskListProps> = ({
   }
 
   return (
-    <FlatList
+    <DraggableFlatList
       data={tasks}
       renderItem={renderItem}
       keyExtractor={item => item.id}
       contentContainerStyle={styles.list}
+      onDragEnd={({ data }) => onReorderTasks(data)}
+      activationDistance={0}
+      style={{ flex: 1 }}
     />
   );
 };

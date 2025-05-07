@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { ChecklistFormData } from '../types';
 import { colors } from '../utils/theme';
@@ -12,6 +12,11 @@ interface ChecklistFormProps {
 
 const ChecklistForm: React.FC<ChecklistFormProps> = ({ onSubmit, initialData, onCancel }) => {
   const [title, setTitle] = useState(initialData?.title || '');
+  const inputRef = useRef<TextInput>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const handleSubmit = () => {
     if (title.trim()) {
@@ -24,6 +29,7 @@ const ChecklistForm: React.FC<ChecklistFormProps> = ({ onSubmit, initialData, on
     <View style={styles.container}>
       <View style={styles.row}>
         <TextInput
+          ref={inputRef}
           style={styles.input}
           value={title}
           onChangeText={setTitle}

@@ -52,9 +52,18 @@
   - エディタ・開発サーバーの再起動
   - バージョン不整合時はバージョン指定インストール
 
+## 2024-05-XX（タブ・構成修正・エラー対応）
+- expo-routerのTabs機能でタブナビゲーション（ホーム・ヒートマップ・設定）を実装
+- (tabs)ディレクトリをtabs（カッコなし）にリネームし、_layout.tsxを移動
+- tabs配下にhome.tsx, heatmap.tsx, settings.tsx, _layout.tsxを配置
+- Stack.Screenのnameを(tabs)→tabsに修正
+- AuthScreen.tsxがcomponents配下にあったため、app直下に移動しimportエラーを解消
+- サーバー再起動・キャッシュクリアで動作確認
+
 ## 2024-05-XX
 - expo-routerのTabs機能を使い、(tabs)ディレクトリとtabs.tsxを新規作成
 - ホーム・ヒートマップ・設定の3タブを実装
 - ホームは既存のHome画面を流用、ヒートマップはTaskHeatmap＋ダミーデータ、設定は仮画面
 - _layout.tsxのStack初期画面を(tabs)に変更
-- todo.mdにタブナビゲーション実装タスクを追加・進行中に 
+- todo.mdにタブナビゲーション実装タスクを追加・進行中に
+- ChecklistForm（ルーティン追加フォーム）にTextInputのrefとuseEffectを追加し、追加ボタン押下時に自動でインプットへフォーカスが当たるように改善 

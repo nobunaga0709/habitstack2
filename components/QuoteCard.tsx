@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundLight,
     borderRadius: 12,
     padding: 16,
-    marginHorizontal: 16,
     marginVertical: 8,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
